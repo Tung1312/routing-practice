@@ -85,12 +85,9 @@ class DVrouter(Router):
         self.broadcast_routes()
 
     def handle_time(self, time_ms):
-        """Handle current time."""
         if time_ms - self.last_time >= self.heartbeat_time:
             self.last_time = time_ms
-            # TODO
-            #   broadcast the distance vector of this router to neighbors
-            pass
+            self.broadcast_routes()
 
     def __repr__(self):
         """Representation for debugging in the network visualizer."""
