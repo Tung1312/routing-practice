@@ -5,23 +5,34 @@
 #####################################################
 
 from router import Router
+from packet import Packet
+import json
+import sys
+
 
 
 class DVrouter(Router):
-    """Distance vector routing protocol implementation.
-
-    Add your own class fields and initialization code (e.g. to create forwarding table
-    data structures). See the `Router` base class for docstrings of the methods to
-    override.
-    """
+    """Distance vector routing protocol implementation."""
 
     def __init__(self, addr, heartbeat_time):
-        Router.__init__(self, addr)  # Initialize base class - DO NOT REMOVE
+        Router.__init__(self, addr)
         self.heartbeat_time = heartbeat_time
         self.last_time = 0
-        # TODO
-        #   add your own class fields and initialization code here
-        pass
+
+        self.routing_table = {}
+        self.routing_table[self.addr] = [0, -1]
+
+        self.ports_info = {}
+
+    def broadcast_routes(self):
+        try:
+            content = json.dumps(self.routing_table)
+            for port in self.ports_info:
+                neighbor_addr = self.ports_info[port][0]
+                p = Packet(kind=Packet.ROUTING, src_addr=self.addr, dst_addr=neighbor_addr, content=content)
+                self.send(port, p)
+        except Exception as e:
+            print(f"\n[ERROR {self.addr}]: {e}", file=sys.stderr)
 
     def handle_packet(self, port, packet):
         """Process incoming packet."""
