@@ -90,7 +90,4 @@ class DVrouter(Router):
             self.broadcast_routes()
 
     def __repr__(self):
-        """Representation for debugging in the network visualizer."""
-        # TODO
-        #   NOTE This method is for your own convenience and will not be graded
-        return f"DVrouter(addr={self.addr})"
+        return f"Router {self.addr}\nTable: {self.routing_table}\nPorts: {self.ports_info}"
