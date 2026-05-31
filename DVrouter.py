@@ -75,12 +75,14 @@ class DVrouter(Router):
         self.broadcast_routes()
 
     def handle_remove_link(self, port):
-        """Handle removed link."""
-        # TODO
-        #   update the distance vector of this router
-        #   update the forwarding table
-        #   broadcast the distance vector of this router to neighbors
-        pass
+        if port in self.ports_info:
+            del self.ports_info[port]
+
+        for dest in self.routing_table:
+            if self.routing_table[dest][1] == port:
+                self.routing_table[dest][0] = 16
+
+        self.broadcast_routes()
 
     def handle_time(self, time_ms):
         """Handle current time."""
