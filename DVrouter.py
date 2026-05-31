@@ -69,12 +69,10 @@ class DVrouter(Router):
             print(f"\n[ERROR {self.addr}]: {e}", file=sys.stderr)
 
     def handle_new_link(self, port, endpoint, cost):
-        """Handle new link."""
-        # TODO
-        #   update the distance vector of this router
-        #   update the forwarding table
-        #   broadcast the distance vector of this router to neighbors
-        pass
+        self.ports_info[port] = [endpoint, cost]
+        if endpoint not in self.routing_table or cost < self.routing_table[endpoint][0]:
+            self.routing_table[endpoint] = [cost, port]
+        self.broadcast_routes()
 
     def handle_remove_link(self, port):
         """Handle removed link."""
