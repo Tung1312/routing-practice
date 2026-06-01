@@ -19,9 +19,11 @@ class LSrouter(Router):
         Router.__init__(self, addr)  # Initialize base class - DO NOT REMOVE
         self.heartbeat_time = heartbeat_time
         self.last_time = 0
-        # TODO
-        #   add your own class fields and initialization code here
-        pass
+        self.routing_table = {self.addr: -1}
+        self.ports_info = {}
+        self.graph = {}
+        self.lsa_seq_tracker = {}
+        self.my_seq = 0
 
     def handle_packet(self, port, packet):
         """Process incoming packet."""
