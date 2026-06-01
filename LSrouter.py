@@ -90,7 +90,7 @@ class LSrouter(Router):
 
     def handle_packet(self, port, packet):
         """Process incoming packet."""
-        
+
         if packet.is_traceroute:
             if packet.dst_addr in self.routing_table:
                 out_port = self.routing_table[packet.dst_addr]
@@ -119,17 +119,21 @@ class LSrouter(Router):
 
     def handle_new_link(self, port, endpoint, cost):
         """Handle new link."""
-        # TODO
-        #   update local data structures and forwarding table
-        #   broadcast the new link state of this router to all neighbors
-        pass
+        self.ports_info[port] = [endpoint, cost]
+        self.broadcast_lsa()
+        self.run_dijkstra()
 
     def handle_remove_link(self, port):
         """Handle removed link."""
-        # TODO
-        #   update local data structures and forwarding table
-        #   broadcast the new link state of this router to all neighbors
-        pass
+        if port in self.ports_info:
+            del self.ports_info[port]
+        my_neighbors = {}
+        for p, info in self.ports_info.items():
+            my_neighbors[info[0]] = info[1]
+        self.graph[self.addr] = my_neighbors
+
+        self.broadcast_lsa()
+        self.run_dijkstra()
 
     def handle_time(self, time_ms):
         """Handle current time."""
